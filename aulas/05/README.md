@@ -563,3 +563,65 @@ Esta aula marcou uma evolução crucial em quatro eixos:
 - **Vite Documentation**: [Features](https://vitejs.dev/guide/features.html), [Server Options](https://vitejs.dev/config/server-options.html), [Build Options](https://vitejs.dev/config/build-options.html)
 - **Vite + Docker**: Containerizing Frontend Build Tools
 - **MDN/Auth Best Practices**: [Stateless Authentication](https://developer.mozilla.org/en-US/docs/Glossary/Authentication), [Token-Based Access](https://developer.mozilla.org/en-US/docs/Glossary/JWT)
+
+---
+
+## 8. TF Aula 05 - TypeScript, Generics e API Contextual
+
+📄 **[Descrição completa em TF05.md](./TF05.md)**
+
+### Objetivo
+
+Implementar as operações que faltam no gerenciador de tarefas: **excluir**, **alterar o nome** e **paginar** a listagem — tudo em **TypeScript** e usando as rotas **contextuais** (`/me/tasks`) vistas na Seção 5, em vez das antigas `/users/{idUser}/tasks`.
+
+### O que você precisa fazer
+
+**0. Migrar as chamadas de API para `/me/tasks`** — adapte `taskDeleteApi.ts`, `taskUpdateApi.ts` e `tasksListApi.ts` pra pararem de mandar `idUser` na URL e chamarem as rotas contextuais (o backend já expõe elas via `TaskViewContextApi`). Ajuste também quem chama essas funções.
+
+**1. Excluir Tarefa (DELETE)** — em `render/taskRender.ts`, descomente o botão "Excluir" e ligue o `taskDeleteHandler`, que já existe. Depois da migração do item 0, ele passa a chamar `taskDeleteApi(taskId)` sem `idUser`.
+
+**2. Alterar Tarefa (UPDATE — nome)** — a Aula 04 já cobriu o checkbox de "concluída". Agora falta o **nome**: adicione um jeito de editar (botão "Editar" ou duplo-clique) e chame `taskUpdateApi(taskId, { name })` num novo `listeners/taskEditHandler.ts`, seguindo o padrão dos outros handlers.
+
+**3. Paginação** — o backend já pagina (`tasksListApi` retorna `PaginatedResponse<Task>` com `data`, `page`, `limit`, `total`), mas o frontend ignora isso hoje. Adicione botões "Anterior"/"Próxima" em `tasksListRender.ts`, chamando `tasksListRender(idUser, novaPagina)` de novo a cada troca.
+
+### Arquivos a trabalhar
+
+```
+src/frontend/resources/js/
+├── api/
+│   ├── taskDeleteApi.ts       ← Migrar pra /me/tasks/{id} (sem idUser)
+│   ├── taskUpdateApi.ts       ← Migrar pra /me/tasks/{id} (sem idUser)
+│   └── tasksListApi.ts        ← Migrar pra /me/tasks (sem idUser)
+├── render/
+│   ├── taskRender.ts          ← Descomente o botão Excluir aqui
+│   └── tasksListRender.ts     ← Adicione os controles de paginação aqui
+├── listeners/
+│   ├── taskDeleteHandler.ts   ← Ajustar chamada pra API contextual
+│   ├── taskToggleHandler.ts   ← Ajustar chamada pra API contextual
+│   └── taskEditHandler.ts     ← NOVO — você cria, seguindo o padrão dos outros
+└── types/
+    └── api.ts                 ← Já tem Task e PaginatedResponse<T> prontos
+```
+
+### APIs disponíveis (contextuais — idUser vem do JWT)
+
+```
+DELETE /me/tasks/{id}
+PUT    /me/tasks/{id}   Body: { name?: string, is_done?: boolean }
+GET    /me/tasks?page=1&limit=10   → { data: Task[], page, limit, total }
+```
+
+### Regras
+
+- ✅ Tipar tudo — sem `any` solto. Reaproveite `Task` e `PaginatedResponse<T>` de `types/api.ts`
+- ✅ Use as rotas contextuais (`/me/tasks`), não as antigas
+- ✅ Siga o padrão do projeto (`js/api`, `js/listeners`, `js/render`)
+- ✅ Recarregue a lista após excluir/alterar/paginar
+- ❌ Não quebre o listar, criar e marcar como concluída (que já funcionam)
+- ❌ Não pode usar frameworks além do que já existe (Bootstrap, Axios)
+
+### Como entregar
+
+🔗 https://docs.google.com/forms/d/e/1FAIpQLSeYG0oQTpWqqZGSCAsTJwpw26Yrd2laubS9VVqqAA_Lr2L_Og/viewform?usp=publish-editor
+
+Detalhes completos estão em **[TF05.md](./TF05.md)**.
