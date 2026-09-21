@@ -6,9 +6,10 @@ Repositório centralizado para todas as aulas do bimestre de Frontend. Aqui voc�
 
 ## 📚 Aulas do Bimestre
 
-| Aula | Descrição | Material |
-|------|-----------|----------|
-| **Aula 04** | Navegadores Web e API - Implementar operações de atualização e exclusão de tarefas em um gerenciador com UPDATE e DELETE | [📖 Acesso](./aulas/04/README.md) |
+| Aula | Material |
+|------|----------|
+| **Aula 04** - Navegadores Web e API | [Acesso](./aulas/04/README.md) |
+| **Aula 05** - TypeScript, Generics e API Contextual | [Acesso](./aulas/05/README.md) |
 
 ---
 
