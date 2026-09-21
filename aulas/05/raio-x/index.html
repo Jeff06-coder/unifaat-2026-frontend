@@ -145,6 +145,7 @@
     border-top: 1px solid var(--border); color: var(--text-dim); font-size: 13px;
   }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 <body>
 
@@ -152,9 +153,9 @@
   <span class="kicker">Raio-X do Código · Aula 05 · Timeline</span>
   <h1>TypeScript, Generics e Pré-Compilação com Vite</h1>
   <p class="meta">
-    <span>📁 src/frontend</span>
-    <span>🗓️ 21/09/2026</span>
-    <span>🔧 8 etapas até agora</span>
+    <span><i class="fa-solid fa-folder"></i> src/frontend</span>
+    <span><i class="fa-solid fa-calendar-days"></i> 21/09/2026</span>
+    <span><i class="fa-solid fa-wrench"></i> 8 etapas até agora</span>
   </p>
 </header>
 
@@ -204,7 +205,7 @@
     </div>
 
     <div class="ok">
-      <strong>✓ Testado:</strong>
+      <strong><i class="fa-solid fa-circle-check"></i> Testado:</strong>
       <p><code class="inline">npm run vite:build</code> (da raiz) → build de produção completo. <code class="inline">npm run docker:build -- nodevitecompiler-container</code> → imagem buildada. Os aliases antigos (<code class="inline">web</code>, <code class="inline">dev</code>, <code class="inline">migrate</code>, <code class="inline">seed</code>, <code class="inline">i</code>) continuam intactos.</p>
     </div>
   </div>
@@ -292,7 +293,7 @@ frontend/
     </div>
 
     <div class="callout">
-      <span class="icon">🧹</span>
+      <span class="icon"><i class="fa-solid fa-broom"></i></span>
       <div>
         <strong>Cleanup no caminho:</strong>
         <p>4 arquivos (<code class="inline">createButtonClickHandler.js</code>, <code class="inline">deleteButtonClickHandler.js</code>, <code class="inline">userRender.js</code>, <code class="inline">paginationRender.js</code>) importavam um <code class="inline">listUserRender.js</code> que não existe no projeto e não eram usados por nenhuma página. Código morto e já quebrado antes desta aula — removidos em vez de convertidos.</p>
@@ -333,7 +334,7 @@ frontend/
     </div>
 
     <div class="ok">
-      <strong>✓ Testado:</strong>
+      <strong><i class="fa-solid fa-circle-check"></i> Testado:</strong>
       <p><code class="inline">tsc --noEmit</code> → 0 erros de tipo. <code class="inline">vite build</code> → build de produção gerando <code class="inline">frontend/public/</code> do zero (78 módulos, HTML + JS + CSS com hash). <code class="inline">frontend/public/</code> agora é 100% gerado, então entrou no <code class="inline">.gitignore</code> — como um <code class="inline">dist/</code>.</p>
     </div>
   </div>
@@ -342,8 +343,8 @@ frontend/
   <div class="entry">
     <div class="entry-dot">5</div>
     <div class="entry-date">Etapa 5</div>
-    <h2>Bootstrap e Axios: do CDN pro npm</h2>
-    <p class="sub">De tags <code class="inline">&lt;script&gt;</code>/<code class="inline">&lt;link&gt;</code> apontando pra internet, pra dependências instaladas e compiladas pelo Vite.</p>
+    <h2>Bootstrap, Axios e FontAwesome: do CDN pro npm</h2>
+    <p class="sub">De tags <code class="inline">&lt;script&gt;</code>/<code class="inline">&lt;link&gt;</code> apontando pra internet, pra dependências instaladas e compiladas pelo Vite — incluindo os ícones.</p>
 
     <div class="diff">
       <div class="diff-head">resources/login.html · resources/tasks.html</div>
@@ -360,7 +361,14 @@ frontend/
       <div class="line add">+ import "bootstrap/dist/js/bootstrap.bundle.min.js";</div>
       <div class="line add">+ import axios from "axios";</div>
       <div class="line ctx"></div>
-      <div class="line add">+ @import "bootstrap/dist/css/bootstrap.min.css";  /* topo do app.css */</div>
+      <div class="line add">+ @import "bootstrap/dist/css/bootstrap.min.css";       /* topo do app.css */</div>
+      <div class="line add">+ @import "@fortawesome/fontawesome-free/css/all.min.css";</div>
+    </div>
+
+    <h3 class="block-title">FontAwesome entrou pelo mesmo caminho</h3>
+    <div class="diff">
+      <div class="diff-head">terminal — dentro de src/</div>
+      <div class="line ctx">$ npm install @fortawesome/fontawesome-free</div>
     </div>
 
     <div class="why">
@@ -370,13 +378,17 @@ frontend/
       </div>
       <div class="why-card">
         <h4>Por que centralizar em app.ts</h4>
-        <p>Bootstrap e Axios não são código nosso — são "vendor". Colocar os imports num arquivo só (<code class="inline">app.ts</code>, carregado em toda página) deixa claro o que é dependência externa vs. o que é lógica da aplicação (que fica em <code class="inline">pages/</code>, <code class="inline">api/</code>, etc).</p>
+        <p>Bootstrap, Axios e FontAwesome não são código nosso — são "vendor". Colocar os imports num arquivo só (<code class="inline">app.ts</code>/<code class="inline">app.css</code>, carregado em toda página) deixa claro o que é dependência externa vs. o que é lógica da aplicação (que fica em <code class="inline">pages/</code>, <code class="inline">api/</code>, etc).</p>
+      </div>
+      <div class="why-card">
+        <h4>O alias @fa da Etapa 3 finalmente ganhou uso</h4>
+        <p>O <code class="inline">vite.config.js</code> já tinha um alias <code class="inline">'@fa'</code> apontando pra <code class="inline">node_modules/@fortawesome/fontawesome-free</code> desde que criamos o entry point — só não existia o pacote instalado ainda. Agora ele resolve de verdade.</p>
       </div>
     </div>
 
     <div class="ok">
-      <strong>✓ Testado:</strong>
-      <p>Build gerou <code class="inline">checkAuthentication.*.css</code> (230KB → 30KB gzip, é o Bootstrap inteiro) e um chunk JS com Axios+Bootstrap bundlados junto. Nenhuma tag de CDN restante em nenhum <code class="inline">.html</code>.</p>
+      <strong><i class="fa-solid fa-circle-check"></i> Testado:</strong>
+      <p>Build gerou <code class="inline">checkAuthentication.*.css</code> (agora 316KB → 54KB gzip, Bootstrap + FontAwesome juntos) e 4 arquivos de fonte (<code class="inline">fa-solid</code>, <code class="inline">fa-regular</code>, <code class="inline">fa-brands</code>, <code class="inline">fa-v4compatibility</code>, todos <code class="inline">.woff2</code> com hash). Nenhuma tag de CDN restante em nenhum <code class="inline">.html</code> do app.</p>
     </div>
   </div>
 
@@ -440,7 +452,7 @@ frontend/
     </div>
 
     <div class="ok">
-      <strong>✓ Testado:</strong>
+      <strong><i class="fa-solid fa-circle-check"></i> Testado:</strong>
       <p><code class="inline">docker compose build nodevitecompiler-container</code> → build limpo. <code class="inline">docker compose up -d</code> → log mostrou <code class="inline">watching for file changes...</code>, build inicial rodou (78 módulos) e escreveu em <code class="inline">/app/public</code> dentro do volume. Container parado depois do teste.</p>
     </div>
   </div>
@@ -483,11 +495,15 @@ frontend/
         <h4>modulepreload e o CSS "vazando" pro JS</h4>
         <p>O <code class="inline">checkAuthentication.*.css</code> e o <code class="inline">checkAuthentication.*.js</code> aparecem porque <code class="inline">app.ts</code> (Bootstrap+Axios) e várias funções de API são código compartilhado entre <code class="inline">login.ts</code> e <code class="inline">tasks.ts</code> — o Vite extrai isso num "chunk" comum em vez de duplicar em cada página.</p>
       </div>
+      <div class="why-card">
+        <h4>Não é só .ts — as imagens também passam pelo pré-compilador</h4>
+        <p><code class="inline">favicon.ico</code> e <code class="inline">squirtle.png</code> ficam em <code class="inline">resources/public/img/</code> (a pasta especial que o Vite copia sem processar) e saem em <code class="inline">public/img/</code> depois do build, junto com o <code class="inline">.vite/manifest.json</code>. A referência <code class="inline">href="./img/favicon.ico"</code> não muda de um lado pro outro — o Vite só garante que o arquivo exista no destino certo.</p>
+      </div>
     </div>
 
     <div class="ok">
-      <strong>✓ Testado:</strong>
-      <p>Rodei <code class="inline">vite build</code> de novo e li o <code class="inline">public/login.html</code> gerado: confirma que o <code class="inline">./js/app.ts</code> e o <code class="inline">./js/pages/login.ts</code> viraram um único <code class="inline">&lt;script&gt;</code> apontando pro bundle final — nenhuma referência a <code class="inline">.ts</code> sobra no HTML entregue ao navegador.</p>
+      <strong><i class="fa-solid fa-circle-check"></i> Testado:</strong>
+      <p>Rodei <code class="inline">vite build</code> de novo e li o <code class="inline">public/login.html</code> gerado: confirma que o <code class="inline">./js/app.ts</code> e o <code class="inline">./js/pages/login.ts</code> viraram um único <code class="inline">&lt;script&gt;</code> apontando pro bundle final — nenhuma referência a <code class="inline">.ts</code> sobra no HTML entregue ao navegador. <code class="inline">public/img/favicon.ico</code> e <code class="inline">public/img/squirtle.png</code> saíram junto no mesmo build.</p>
     </div>
   </div>
 
@@ -551,7 +567,7 @@ frontend/
     </div>
 
     <div class="ok">
-      <strong>✓ Testado:</strong>
+      <strong><i class="fa-solid fa-circle-check"></i> Testado:</strong>
       <p><code class="inline">node --check</code> em todos os arquivos novos → sem erro de sintaxe. <code class="inline">node _web.js</code> subiu sem quebrar no import/wiring das novas rotas.</p>
     </div>
   </div>
